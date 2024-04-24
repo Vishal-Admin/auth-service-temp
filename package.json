@@ -4,7 +4,9 @@
   "description": "auth service for pizza app",
   "main": "index.js",
   "scripts": {
-    "dev": "node src/server.js"
+    "dev": "node src/server.js",
+    "fcheck":  "prettier . --check",
+    "ffix":  "prettier . --write"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,7 @@
   "homepage": "https://github.com/Vishal-Admin/auth-service-temp#readme",
   "devDependencies": {
     "@types/node": "^20.12.7",
+    "prettier": "3.2.5",
     "typescript": "^5.4.5"
   }
 }

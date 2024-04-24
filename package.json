@@ -1,0 +1,19 @@
+{
+  "name": "auth-service-temp",
+  "version": "1.0.0",
+  "description": "auth service for pizza app",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vishal-Admin/auth-service-temp.git"
+  },
+  "author": "VishalPanchal vishalpanchal570@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vishal-Admin/auth-service-temp/issues"
+  },
+  "homepage": "https://github.com/Vishal-Admin/auth-service-temp#readme"
+}

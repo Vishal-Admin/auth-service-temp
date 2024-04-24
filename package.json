@@ -1,26 +1,33 @@
 {
-  "name": "auth-service-temp",
-  "version": "1.0.0",
-  "description": "auth service for pizza app",
-  "main": "index.js",
-  "scripts": {
-    "dev": "node src/server.js",
-    "fcheck":  "prettier . --check",
-    "ffix":  "prettier . --write"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Vishal-Admin/auth-service-temp.git"
-  },
-  "author": "VishalPanchal vishalpanchal570@gmail.com",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Vishal-Admin/auth-service-temp/issues"
-  },
-  "homepage": "https://github.com/Vishal-Admin/auth-service-temp#readme",
-  "devDependencies": {
-    "@types/node": "^20.12.7",
-    "prettier": "3.2.5",
-    "typescript": "^5.4.5"
-  }
+    "name": "auth-service-temp",
+    "version": "1.0.0",
+    "description": "auth service for pizza app",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node src/server.js",
+        "fcheck": "prettier . --check",
+        "ffix": "prettier . --write",
+        "lint": "eslint .",
+        "lfix": "eslint . --fix"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Vishal-Admin/auth-service-temp.git"
+    },
+    "author": "VishalPanchal vishalpanchal570@gmail.com",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Vishal-Admin/auth-service-temp/issues"
+    },
+    "homepage": "https://github.com/Vishal-Admin/auth-service-temp#readme",
+    "devDependencies": {
+        "@eslint/js": "^9.1.1",
+        "@types/node": "^20.12.7",
+        "@typescript-eslint/eslint-plugin": "^7.7.1",
+        "@typescript-eslint/parser": "^7.7.1",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "prettier": "3.2.5",
+        "typescript": "^5.4.5"
+    }
 }

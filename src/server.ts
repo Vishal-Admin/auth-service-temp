@@ -1,7 +1,8 @@
-function login(username: string): string {
-    console.log(username);
-
-    return username;
+function login(username: string): boolean {
+    const user = {
+        name: "Vishal",
+    };
+    return user["name"] === username;
 }
 
-login("vishal");
+login("Vishal");

@@ -1,2 +1,1 @@
-npm run lfix
-npm run ffix
+npx lint-staged

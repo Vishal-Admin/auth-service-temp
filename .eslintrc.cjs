@@ -1,7 +1,5 @@
 /* eslint-env node */
 
-const { rules } = require("eslint-config-prettier");
-
 module.exports = {
     extends: [
         "eslint:recommended",
@@ -17,5 +15,6 @@ module.exports = {
     root: true,
     rules: {
         "no-console": "error",
+        "dot-notation": "error",
     },
 };

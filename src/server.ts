@@ -4,5 +4,5 @@ function login(username: string): boolean {
     };
     return user.name === username;
 }
-
+// husky and lint-staged setup
 login("Vishal");

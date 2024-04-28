@@ -4,7 +4,7 @@
     "description": "auth service for pizza app",
     "main": "index.js",
     "scripts": {
-        "dev": "node src/server.js",
+        "dev": "nodemon src/server.ts",
         "fcheck": "prettier . --check",
         "ffix": "prettier . --write",
         "lint": "eslint .",
@@ -23,6 +23,7 @@
     "homepage": "https://github.com/Vishal-Admin/auth-service-temp#readme",
     "devDependencies": {
         "@eslint/js": "^9.1.1",
+        "@types/express": "^4.17.21",
         "@types/node": "^20.12.7",
         "@typescript-eslint/eslint-plugin": "^7.7.1",
         "@typescript-eslint/parser": "^7.7.1",
@@ -40,6 +41,9 @@
         ]
     },
     "dependencies": {
-        "dotenv": "^16.4.5"
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2",
+        "nodemon": "^3.1.0",
+        "ts-node": "^10.9.2"
     }
 }

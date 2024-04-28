@@ -38,5 +38,8 @@
             "npm run lfix",
             "npm run ffix"
         ]
+    },
+    "dependencies": {
+        "dotenv": "^16.4.5"
     }
 }

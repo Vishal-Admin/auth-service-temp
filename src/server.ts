@@ -1,8 +1,4 @@
-function login(username: string): boolean {
-    const user = {
-        name: "Vishal",
-    };
-    return user.name === username;
-}
-// husky and lint-staged setup
-login("Vishal");
+import { Config } from "./config";
+
+// eslint-disable-next-line no-console
+console.log("PORT: ", Config.PORT, Config.NODE_ENV);

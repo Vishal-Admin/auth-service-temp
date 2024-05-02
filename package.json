@@ -9,7 +9,8 @@
         "ffix": "prettier . --write",
         "lint": "eslint .",
         "lfix": "eslint . --fix",
-        "prepare": "husky"
+        "prepare": "husky",
+        "test": "jest --watch --runInBand"
     },
     "repository": {
         "type": "git",
@@ -24,15 +25,20 @@
     "devDependencies": {
         "@eslint/js": "^9.1.1",
         "@types/express": "^4.17.21",
+        "@types/jest": "^29.5.12",
         "@types/node": "^20.12.7",
+        "@types/supertest": "^6.0.2",
         "@types/winston": "^2.4.4",
         "@typescript-eslint/eslint-plugin": "^7.7.1",
         "@typescript-eslint/parser": "^7.7.1",
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^9.1.0",
         "husky": "^9.0.11",
+        "jest": "^29.7.0",
         "lint-staged": "^15.2.2",
         "prettier": "3.2.5",
+        "supertest": "^7.0.0",
+        "ts-jest": "^29.1.2",
         "typescript": "^5.4.5"
     },
     "lint-staged": {

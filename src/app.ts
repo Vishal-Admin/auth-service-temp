@@ -8,6 +8,10 @@ app.get("/", async (req, res) => {
     res.send("welocome to auth service");
 });
 
+app.get("/login", async (req, res) => {
+    res.send("welocome to login service");
+});
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: HttpError, req: Request, res: Response, next: NextFunction) => {
     logger.error(error.message);

@@ -4,7 +4,7 @@
     "description": "auth service for pizza app",
     "main": "index.js",
     "scripts": {
-        "dev": "nodemon src/server.ts",
+        "dev": "nodemon -L src/server.ts",
         "fcheck": "prettier . --check",
         "ffix": "prettier . --write",
         "lint": "eslint .",

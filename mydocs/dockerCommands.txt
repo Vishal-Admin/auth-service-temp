@@ -1,0 +1,51 @@
+//-----------------------auth service in docker container --------------------//
+
+create docker/dev/Dockerfile   file content is like below 
+
+FROM node:18
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 5501
+
+CMD ["npm", "run", "dev"]
+
+
+install docker desktop in our pc from ofiicial site of docker
+
+if docker not working conform that (if setup in windows only then)
+open "turn windows fetures on off" and check two options in cheked or not
+1. Windows Subsystem for Linux (WSL)
+2. Windows Hypervisor Platform
+
+docker build -t auth-service:dev -f docker/dev/Dockerfile .  //for create new image that is dipendent on Dockerfile
+
+modify your dev script =>   "dev": "nodemon -L src/server.ts",
+
+docker run --rm -it -v ${PWD}:/usr/src/app -v /usr/src/app/node_modules --env-file ${PWD}/.env -p 5501:5501 -e NODE_ENV=development auth-service:dev  // run image in continner using this command 
+
+
+
+
+//---------------------postgresql docker setup---------------------//
+
+docker pull postgres  //we will clone postgres image from internet using below command
+
+docker volume create mernpgdata  //create mernpgdata volume using this command
+
+docker volume ls // to check the volume list 
+
+docker run --rm --name mernpg-container -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root -v mernpgdata:/var/lib/postgresql/data -p 5432:5432 -d postgres  //run postgres image with this command
+
+docker ps //to view list of containers that are running with seprate id's
+
+docker stop <id of container>
+
+
+

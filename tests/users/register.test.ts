@@ -70,6 +70,20 @@ describe("POST /auth/Register", () => {
             expect(users[0].lastName).toBe(userData.lastName);
             expect(users[0].email).toBe(userData.email);
         });
+
+        it("should retun the user.id", async () => {
+            const userData = {
+                firstName: "Vishal",
+                lastName: "Panchal",
+                email: "vishalpanchal570@gmail.com",
+                password: "secret",
+            };
+
+            const user = await request(app)
+                .post("/auth/register")
+                .send(userData);
+            expect(user.body).toHaveProperty("id");
+        });
     });
     describe("Filds are missing", () => {});
 });

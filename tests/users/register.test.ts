@@ -6,6 +6,7 @@ import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
 import { UserData } from "../../src/types";
 import { isJwt } from "../utils";
+import { RefreshToken } from "../../src/entity/RefreshToken";
 
 describe("POST /auth/Register", () => {
     let connection: DataSource;
@@ -121,6 +122,21 @@ describe("POST /auth/Register", () => {
 
             expect(isJwt(accessToken)).toBeTruthy();
             expect(isJwt(refreshToken)).toBeTruthy();
+        });
+
+        it("should store the refresh token in the database", async () => {
+            const userData = { ...userMainData };
+            const response = await SubmitData(userData);
+            const refreshTokenRepo = connection.getRepository(RefreshToken);
+
+            const tokens = await refreshTokenRepo
+                .createQueryBuilder("refreshToken")
+                .where("refreshToken.userId = :userId", {
+                    userId: (response.body as Record<string, string>).id,
+                })
+                .getMany();
+
+            expect(tokens).toHaveLength(1);
         });
     });
     describe("Filds are missing", () => {

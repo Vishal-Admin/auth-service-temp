@@ -1,18 +1,17 @@
-import fs from "fs";
-import path from "path";
 import { NextFunction, Response } from "express";
-import { JwtPayload, sign } from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 import { RegisterUserRequest } from "../types";
 import { UserService } from "../services/UserServices";
 import { Logger } from "winston";
 import { validationResult } from "express-validator";
-import createHttpError from "http-errors";
 import { Config } from "../config";
+import { TokenService } from "../services/TokenService";
 
 export class AuthController {
     constructor(
         private userService: UserService,
         private logger: Logger,
+        private tokenService: TokenService,
     ) {}
 
     async register(
@@ -43,33 +42,20 @@ export class AuthController {
             });
             this.logger.info(`User has been regitered`, { id: user.id });
 
-            //jWT token with public and private keys
-            let privateKey: Buffer;
-            try {
-                privateKey = fs.readFileSync(
-                    path.join(__dirname, "../../certs/private.pem"),
-                );
-            } catch (err) {
-                const error = createHttpError(
-                    500,
-                    "Error while reading private key",
-                );
-                next(error);
-                return;
-            }
             const payload: JwtPayload = {
                 sub: String(user.id),
                 role: user.role,
             };
-            const accessToken = sign(payload, privateKey, {
-                algorithm: "RS256",
-                expiresIn: "1h",
-                issuer: Config.ISSUER,
-            });
-            const refreshToken = sign(payload, Config.REFRESH_TOKEN_KEY!, {
-                algorithm: "HS256",
-                expiresIn: "1y",
-                issuer: Config.ISSUER,
+
+            const accessToken = this.tokenService.generateAccessToken(payload);
+
+            //persist the refresh token
+            const newRefreshToken =
+                await this.tokenService.parsistRefreshToken(user);
+
+            const refreshToken = this.tokenService.generateRefreshToken({
+                ...payload,
+                id: String(newRefreshToken.id),
             });
 
             const options = {

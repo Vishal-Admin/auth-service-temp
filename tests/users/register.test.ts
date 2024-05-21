@@ -32,8 +32,8 @@ describe("POST /auth/Register", () => {
     };
 
     const SubmitData = async (data: UserData) => {
-        const responce = await request(app).post("/auth/register").send(data);
-        return responce;
+        const response = await request(app).post("/auth/register").send(data);
+        return response;
     };
 
     const getUserData = async () => {
@@ -44,13 +44,11 @@ describe("POST /auth/Register", () => {
 
     describe("Given all filds", () => {
         it("should return the 201 status code", async () => {
-            const userData = { ...userMainData };
-            const response = await SubmitData(userData);
+            const response = await SubmitData({ ...userMainData });
             expect(response.statusCode).toBe(201);
         });
         it("should return valid JSON response", async () => {
-            const userData = { ...userMainData };
-            const response = await SubmitData(userData);
+            const response = await SubmitData({ ...userMainData });
             expect(
                 (response.headers as Record<string, string>)["content-type"],
             ).toEqual(expect.stringContaining("json"));
@@ -67,8 +65,7 @@ describe("POST /auth/Register", () => {
         });
 
         it("should retun the user.id", async () => {
-            const userData = { ...userMainData };
-            const user = await SubmitData(userData);
+            const user = await SubmitData({ ...userMainData });
             expect(user.body).toHaveProperty("id");
         });
 
@@ -93,15 +90,15 @@ describe("POST /auth/Register", () => {
             const userData = { ...userMainData };
             const userRepository = connection.getRepository(User);
             await userRepository.save({ ...userData, role: Roles.CUSTOMER });
-            const responce = await SubmitData(userData);
+            const response = await SubmitData(userData);
             const users = await getUserData();
-            expect(responce.statusCode).toBe(400);
+            expect(response.statusCode).toBe(400);
             expect(users).toHaveLength(1);
         });
 
         it("should return the access token and refresh token inside a cookie", async () => {
-            const user = { ...userMainData };
-            const response = await SubmitData(user);
+            const userData = { ...userMainData };
+            const response = await SubmitData(userData);
             interface Headers {
                 ["set-cookie"]: string[];
             }
@@ -142,29 +139,29 @@ describe("POST /auth/Register", () => {
     describe("Filds are missing", () => {
         it("should return 400 status code if email field is missing", async () => {
             const userData = { ...userMainData, email: "" };
-            const responce = await SubmitData(userData);
-            expect(responce.statusCode).toBe(400);
+            const response = await SubmitData(userData);
+            expect(response.statusCode).toBe(400);
             const users = await getUserData();
             expect(users).toHaveLength(0);
         });
         it("should return 400 status code if firstName field is missing", async () => {
             const userData = { ...userMainData, firstName: "" };
-            const responce = await SubmitData(userData);
-            expect(responce.statusCode).toBe(400);
+            const response = await SubmitData(userData);
+            expect(response.statusCode).toBe(400);
             const users = await getUserData();
             expect(users).toHaveLength(0);
         });
         it("should return 400 status code if lastName field is missing", async () => {
             const userData = { ...userMainData, lastName: "" };
-            const responce = await SubmitData(userData);
-            expect(responce.statusCode).toBe(400);
+            const response = await SubmitData(userData);
+            expect(response.statusCode).toBe(400);
             const users = await getUserData();
             expect(users).toHaveLength(0);
         });
         it("should return 400 status code if password field is missing", async () => {
             const userData = { ...userMainData, password: "" };
-            const responce = await SubmitData(userData);
-            expect(responce.statusCode).toBe(400);
+            const response = await SubmitData(userData);
+            expect(response.statusCode).toBe(400);
             const users = await getUserData();
             expect(users).toHaveLength(0);
         });

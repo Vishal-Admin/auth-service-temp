@@ -7,6 +7,11 @@ export interface UserData {
     password: string;
 }
 
+export interface LoginCredentials {
+    email: string;
+    password: string;
+}
+
 export interface RegisterUserRequest extends Request {
     body: UserData;
 }

@@ -110,7 +110,6 @@ export class AuthController {
                     password,
                     user.password,
                 );
-
             if (!isPasswordMatch) {
                 const error = createHttpError(404, "Invalid credentials");
                 next(error);
@@ -158,6 +157,6 @@ export class AuthController {
     async self(req: AuthRequest, res: Response) {
         const id = Number(req.auth.sub);
         const user = await this.userService.findById(id);
-        res.json(user);
+        res.json({ ...user, password: undefined });
     }
 }

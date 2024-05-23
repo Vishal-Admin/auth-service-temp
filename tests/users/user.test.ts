@@ -82,5 +82,17 @@ describe("Get /auth/self ", () => {
                 "password",
             );
         });
+
+        it("should return 401 statusCode if token dose not exists", async () => {
+            const userRepository = connection.getRepository(User);
+            await userRepository.save({
+                ...userMainData,
+                role: Roles.CUSTOMER,
+            });
+
+            const response = await request(app).get("/auth/self");
+
+            expect(response.statusCode).toBe(401);
+        });
     });
 });

@@ -7,7 +7,7 @@ import authRouter from "./routes/auth";
 import cookieParser from "cookie-parser";
 
 const app = express();
-
+app.use(express.static("public"));
 app.use(cookieParser());
 app.use(express.json());
 
@@ -24,7 +24,7 @@ app.use("/auth", authRouter);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: HttpError, req: Request, res: Response, next: NextFunction) => {
     logger.error(error.message);
-    const statusCode = error.statusCode || 500;
+    const statusCode = error.statusCode || error.status || 500;
     res.status(statusCode).json({
         errors: [
             {

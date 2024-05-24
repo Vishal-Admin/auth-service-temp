@@ -19,10 +19,27 @@ export class Utility {
             ...payload,
             id: String(newRefreshToken.id),
         });
-        const options = {
+        const accessTitle = "accessToken";
+        const refreshTitle = "refreshToken";
+        const accessOptions = {
             domain: Config.HOST,
             httpOnly: true,
+            sameSite: "strict" as const,
+            maxAge: 1000 * 60 * 60 /*1 hrs*/,
         };
-        return { refreshToken, accessToken, options };
+        const refreshOptions = {
+            domain: Config.HOST,
+            httpOnly: true,
+            sameSite: "strict" as const,
+            maxAge: 1000 * 60 * 60 * 24 * 365 /*365 Days*/,
+        };
+        return {
+            refreshTitle,
+            refreshToken,
+            refreshOptions,
+            accessTitle,
+            accessToken,
+            accessOptions,
+        };
     }
 }

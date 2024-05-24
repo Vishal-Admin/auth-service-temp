@@ -50,21 +50,17 @@ export class AuthController {
                 role: user.role,
             };
             const utility = new Utility(this.tokenService);
-            const { accessToken, refreshToken, options } =
-                await utility.genrateAccessAndRefreshToken(payload, user);
+            const {
+                refreshTitle,
+                refreshToken,
+                refreshOptions,
+                accessTitle,
+                accessToken,
+                accessOptions,
+            } = await utility.genrateAccessAndRefreshToken(payload, user);
 
-            res.cookie("accessToken", accessToken, {
-                ...options,
-                sameSite: "strict",
-                maxAge: 1000 * 60 * 60 /*1 hrs*/,
-            });
-
-            res.cookie("refreshToken", refreshToken, {
-                ...options,
-                sameSite: "strict",
-                maxAge: 1000 * 60 * 60 * 24 * 365 /*365 Days*/,
-            });
-
+            res.cookie(accessTitle, accessToken, accessOptions);
+            res.cookie(refreshTitle, refreshToken, refreshOptions);
             res.status(201).json({ id: user.id });
         } catch (err) {
             next(err);
@@ -109,20 +105,17 @@ export class AuthController {
             };
 
             const utility = new Utility(this.tokenService);
-            const { accessToken, refreshToken, options } =
-                await utility.genrateAccessAndRefreshToken(payload, user);
+            const {
+                refreshTitle,
+                refreshToken,
+                refreshOptions,
+                accessTitle,
+                accessToken,
+                accessOptions,
+            } = await utility.genrateAccessAndRefreshToken(payload, user);
 
-            res.cookie("accessToken", accessToken, {
-                ...options,
-                sameSite: "strict",
-                maxAge: 1000 * 60 * 60 /*1 hrs*/,
-            });
-
-            res.cookie("refreshToken", refreshToken, {
-                ...options,
-                sameSite: "strict",
-                maxAge: 1000 * 60 * 60 * 24 * 365 /*365 Days*/,
-            });
+            res.cookie(accessTitle, accessToken, accessOptions);
+            res.cookie(refreshTitle, refreshToken, refreshOptions);
             this.logger.info("User has been logged in", { id: user.id });
             res.json({ id: user.id });
         } catch (err) {
@@ -154,23 +147,19 @@ export class AuthController {
                 return;
             }
             const utility = new Utility(this.tokenService);
-            const { accessToken, refreshToken, options } =
-                await utility.genrateAccessAndRefreshToken(payload, user);
-
+            const {
+                refreshTitle,
+                refreshToken,
+                refreshOptions,
+                accessTitle,
+                accessToken,
+                accessOptions,
+            } = await utility.genrateAccessAndRefreshToken(payload, user);
             // delete the old refresh token
             await this.tokenService.deleteRefreshToken(Number(req.auth.id));
 
-            res.cookie("accessToken", accessToken, {
-                ...options,
-                sameSite: "strict",
-                maxAge: 1000 * 60 * 60 /*1 hrs*/,
-            });
-
-            res.cookie("refreshToken", refreshToken, {
-                ...options,
-                sameSite: "strict",
-                maxAge: 1000 * 60 * 60 * 24 * 365 /*365 Days*/,
-            });
+            res.cookie(accessTitle, accessToken, accessOptions);
+            res.cookie(refreshTitle, refreshToken, refreshOptions);
             this.logger.info("User has been logged in", { id: user.id });
             res.json({ id: user.id });
         } catch (error) {

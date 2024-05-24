@@ -4,10 +4,10 @@ import { AuthRequest, RegisterUserRequest } from "../types";
 import { UserService } from "../services/UserServices";
 import { Logger } from "winston";
 import { validationResult } from "express-validator";
-import { Config } from "../config";
 import { TokenService } from "../services/TokenService";
 import createHttpError from "http-errors";
 import { CredentialService } from "../services/CredentialService";
+import { Utility } from "../utils";
 
 export class AuthController {
     constructor(
@@ -49,22 +49,10 @@ export class AuthController {
                 sub: String(user.id),
                 role: user.role,
             };
+            const utility = new Utility(this.tokenService);
+            const { accessToken, refreshToken, options } =
+                await utility.genrateAccessAndRefreshToken(payload, user);
 
-            const accessToken = this.tokenService.generateAccessToken(payload);
-
-            //persist the refresh token
-            const newRefreshToken =
-                await this.tokenService.parsistRefreshToken(user);
-
-            const refreshToken = this.tokenService.generateRefreshToken({
-                ...payload,
-                id: String(newRefreshToken.id),
-            });
-
-            const options = {
-                domain: Config.HOST,
-                httpOnly: true,
-            };
             res.cookie("accessToken", accessToken, {
                 ...options,
                 sameSite: "strict",
@@ -120,21 +108,10 @@ export class AuthController {
                 role: user.role,
             };
 
-            const accessToken = this.tokenService.generateAccessToken(payload);
+            const utility = new Utility(this.tokenService);
+            const { accessToken, refreshToken, options } =
+                await utility.genrateAccessAndRefreshToken(payload, user);
 
-            //persist the refresh token
-            const newRefreshToken =
-                await this.tokenService.parsistRefreshToken(user);
-
-            const refreshToken = this.tokenService.generateRefreshToken({
-                ...payload,
-                id: String(newRefreshToken.id),
-            });
-
-            const options = {
-                domain: Config.HOST,
-                httpOnly: true,
-            };
             res.cookie("accessToken", accessToken, {
                 ...options,
                 sameSite: "strict",
@@ -167,9 +144,7 @@ export class AuthController {
                 role: req.auth.role,
             };
 
-            const accessToken = this.tokenService.generateAccessToken(payload);
             const user = await this.userService.findById(Number(req.auth.sub));
-
             if (!user) {
                 const error = createHttpError(
                     404,
@@ -178,23 +153,13 @@ export class AuthController {
                 next(error);
                 return;
             }
-
-            //persist the refresh token
-            const newRefreshToken =
-                await this.tokenService.parsistRefreshToken(user);
+            const utility = new Utility(this.tokenService);
+            const { accessToken, refreshToken, options } =
+                await utility.genrateAccessAndRefreshToken(payload, user);
 
             // delete the old refresh token
             await this.tokenService.deleteRefreshToken(Number(req.auth.id));
 
-            const refreshToken = this.tokenService.generateRefreshToken({
-                ...payload,
-                id: String(newRefreshToken.id),
-            });
-
-            const options = {
-                domain: Config.HOST,
-                httpOnly: true,
-            };
             res.cookie("accessToken", accessToken, {
                 ...options,
                 sameSite: "strict",

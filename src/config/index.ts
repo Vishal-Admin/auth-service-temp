@@ -2,7 +2,9 @@ import { config } from "dotenv";
 import path from "path";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-config({ path: path.join(__dirname, `../../.env.${process.env.NODE_ENV}`) });
+config({
+    path: path.join(__dirname, `../../.env.${process.env.NODE_ENV || "dev"}`),
+});
 
 const {
     PORT,

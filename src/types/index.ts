@@ -19,7 +19,7 @@ export interface RegisterUserRequest extends Request {
 export interface AuthRequest extends Request {
     auth: {
         sub: string;
-        role: number;
+        role: string;
         id?: string;
     };
 }
@@ -36,4 +36,12 @@ export interface IRefreshTokenPayload {
 export interface ITenant {
     name: string;
     address: string;
+}
+
+export interface CreateTenantResponse {
+    id: string;
+}
+
+export interface CreateTenantRequest extends Request {
+    body: ITenant;
 }

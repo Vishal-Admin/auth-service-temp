@@ -37,11 +37,9 @@ describe("POST /auth/login ", () => {
         adminToken: string | null,
     ) => {
         const requestBuilder = request(app).post("/tenants").send(tenantData);
-
         if (adminToken) {
             await requestBuilder.set("Cookie", [`accessToken=${adminToken}`]);
         }
-
         const response = await requestBuilder;
         return response;
     };
@@ -77,6 +75,15 @@ describe("POST /auth/login ", () => {
             const tenantData = { ...tenantMainData };
             const response = await submitTenant(tenantData, null);
             expect(response.statusCode).toBe(401);
+            const tanants = await getTenantData();
+            expect(tanants).toHaveLength(0);
+        });
+
+        it("should return 403 status code if user is not ADMIN", async () => {
+            const tenantData = { ...tenantMainData };
+            const managerToken = jwks.token({ sub: "1", role: Roles.MANAGER });
+            const response = await submitTenant(tenantData, managerToken);
+            expect(response.statusCode).toBe(403);
             const tanants = await getTenantData();
             expect(tanants).toHaveLength(0);
         });

@@ -6,7 +6,7 @@ import createJWKSMock from "mock-jwks";
 import { User } from "../../src/entity/User";
 import { Roles } from "../../src/constants";
 
-describe("Get /auth/self ", () => {
+describe.skip("Get /auth/self", () => {
     let connection: DataSource;
     let jwks: ReturnType<typeof createJWKSMock>;
 

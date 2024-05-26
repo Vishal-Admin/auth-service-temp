@@ -7,7 +7,7 @@ import { Tenant } from "../../src/entity/Tenant";
 import createJWKSMock from "mock-jwks";
 import { Roles } from "../../src/constants";
 
-describe("PATCH(Update) /Tenant/id ", () => {
+describe("Delete /Tenants/id ", () => {
     let connection: DataSource;
     let jwks: ReturnType<typeof createJWKSMock>;
     let adminToken: string;
@@ -40,14 +40,8 @@ describe("PATCH(Update) /Tenant/id ", () => {
         return response;
     };
 
-    const UpdateTenant = async (
-        tenantData: ITenant,
-        adminToken: string | null,
-        id: number,
-    ) => {
-        const requestBuilder = request(app)
-            .patch(`/tenants/${id}`)
-            .send(tenantData);
+    const DeleteTenant = async (adminToken: string | null, id: number) => {
+        const requestBuilder = request(app).delete(`/tenants/${id}`);
         if (adminToken) {
             await requestBuilder.set("Cookie", [`accessToken=${adminToken}`]);
         }
@@ -66,62 +60,41 @@ describe("PATCH(Update) /Tenant/id ", () => {
         address: "Tenant Address1",
     };
 
-    const tenantMainData2 = {
-        name: "Tenant Name2",
-        address: "Tenant Address2",
-    };
-
     describe("Given all filds", () => {
         it("should return the 200 status code", async () => {
             const submitResponse = await SubmitTenant(tenantMainData);
             const id = (submitResponse.body as CreateTenantResponse).id;
-            const response = await UpdateTenant(
-                tenantMainData2,
-                adminToken,
-                Number(id),
-            );
+            const response = await DeleteTenant(adminToken, Number(id));
             expect(response.statusCode).toBe(200);
         });
 
-        it("should update tanant in database", async () => {
+        it("should delete tanant from database", async () => {
             const submitResponse = await SubmitTenant(tenantMainData);
             const id = (submitResponse.body as CreateTenantResponse).id;
             const CTanants = await getTenantData();
             expect(CTanants).toHaveLength(1);
-            await UpdateTenant(tenantMainData2, adminToken, Number(id));
+            await DeleteTenant(adminToken, Number(id));
             const UTanants = await getTenantData();
-            expect(UTanants).toHaveLength(1);
-            expect(CTanants[0].name).not.toEqual(UTanants[0].name);
-            expect(CTanants[0].address).not.toEqual(UTanants[0].address);
+            expect(UTanants).toHaveLength(0);
         });
 
         it("should return 401 status code if user is not authenticated", async () => {
             const submitResponse = await SubmitTenant(tenantMainData);
             const id = (submitResponse.body as CreateTenantResponse).id;
-            const response = await UpdateTenant(
-                tenantMainData2,
-                null,
-                Number(id),
-            );
+            const response = await DeleteTenant(null, Number(id));
             expect(response.statusCode).toBe(401);
             const tanants = await getTenantData();
-            expect(tanants[0].name).toBe(tenantMainData.name);
-            expect(tanants[0].address).toBe(tenantMainData.address);
+            expect(tanants).toHaveLength(1);
         });
 
         it("should return 403 status code if user is not ADMIN", async () => {
             const submitResponse = await SubmitTenant(tenantMainData);
             const id = (submitResponse.body as CreateTenantResponse).id;
             const managerToken = jwks.token({ sub: "1", role: Roles.MANAGER });
-            const response = await UpdateTenant(
-                tenantMainData2,
-                managerToken,
-                Number(id),
-            );
+            const response = await DeleteTenant(managerToken, Number(id));
             expect(response.statusCode).toBe(403);
             const tanants = await getTenantData();
-            expect(tanants[0].name).toBe(tenantMainData.name);
-            expect(tanants[0].address).toBe(tenantMainData.address);
+            expect(tanants).toHaveLength(1);
         });
 
         it("should return valid JSON response", async () => {
@@ -129,11 +102,7 @@ describe("PATCH(Update) /Tenant/id ", () => {
             const id = (submitResponse.body as CreateTenantResponse).id;
             const CTanants = await getTenantData();
             expect(CTanants).toHaveLength(1);
-            const response = await UpdateTenant(
-                tenantMainData2,
-                adminToken,
-                Number(id),
-            );
+            const response = await DeleteTenant(adminToken, Number(id));
             expect(
                 (response.headers as Record<string, string>)["content-type"],
             ).toEqual(expect.stringContaining("json"));
@@ -141,45 +110,10 @@ describe("PATCH(Update) /Tenant/id ", () => {
 
         it("should return 400 status code if id is NAN", async () => {
             await SubmitTenant(tenantMainData);
-            const response = await UpdateTenant(
-                tenantMainData2,
-                adminToken,
-                Number("xyz"),
-            );
+            const response = await DeleteTenant(adminToken, Number("xyz"));
             expect(response.statusCode).toBe(400);
             const tanants = await getTenantData();
-            expect(tanants[0].name).toBe(tenantMainData.name);
-            expect(tanants[0].address).toBe(tenantMainData.address);
-        });
-    });
-
-    describe("Filds are missing", () => {
-        it("should return 400 status code if name field is missing", async () => {
-            const submitResponse = await SubmitTenant(tenantMainData);
-            const id = (submitResponse.body as CreateTenantResponse).id;
-            const response = await UpdateTenant(
-                { ...tenantMainData2, name: "" },
-                adminToken,
-                Number(id),
-            );
-            expect(response.statusCode).toBe(400);
-            const tanants = await getTenantData();
-            expect(tanants[0].name).toBe(tenantMainData.name);
-            expect(tanants[0].address).toBe(tenantMainData.address);
-        });
-
-        it("should return 400 status code if address field is missing", async () => {
-            const submitResponse = await SubmitTenant(tenantMainData);
-            const id = (submitResponse.body as CreateTenantResponse).id;
-            const response = await UpdateTenant(
-                { ...tenantMainData2, address: "" },
-                adminToken,
-                Number(id),
-            );
-            expect(response.statusCode).toBe(400);
-            const tanants = await getTenantData();
-            expect(tanants[0].name).toBe(tenantMainData.name);
-            expect(tanants[0].address).toBe(tenantMainData.address);
+            expect(tanants).toHaveLength(1);
         });
     });
 });

@@ -5,7 +5,7 @@ import { AppDataSource } from "../../src/config/data-source";
 import { isJwt } from "../utils";
 import { LoginCredentials, UserData } from "../../src/types";
 
-describe.skip("POST /auth/login ", () => {
+describe("POST /auth/login ", () => {
     let connection: DataSource;
 
     beforeAll(async () => {

@@ -37,6 +37,7 @@ describe("POST /users", () => {
         lastName: "Panchal",
         email: "vishalpanchal570@gmail.com",
         password: "Secret@123",
+        role: Roles.MANAGER,
     };
 
     const SubmitUser = async (
@@ -99,6 +100,72 @@ describe("POST /users", () => {
             expect(
                 (response.headers as Record<string, string>)["content-type"],
             ).toEqual(expect.stringContaining("json"));
+        });
+    });
+    describe("Filds are missing", () => {
+        it("should return 400 status code if email field is missing", async () => {
+            const userData = { ...userMainData, email: "" };
+            const response = await SubmitUser(userData, adminToken);
+            expect(response.statusCode).toBe(400);
+            const users = await getUserData();
+            expect(users).toHaveLength(0);
+        });
+        it("should return 400 status code if firstName field is missing", async () => {
+            const userData = { ...userMainData, firstName: "" };
+            const response = await SubmitUser(userData, adminToken);
+            expect(response.statusCode).toBe(400);
+            const users = await getUserData();
+            expect(users).toHaveLength(0);
+        });
+        it("should return 400 status code if lastName field is missing", async () => {
+            const userData = { ...userMainData, lastName: "" };
+            const response = await SubmitUser(userData, adminToken);
+            expect(response.statusCode).toBe(400);
+            const users = await getUserData();
+            expect(users).toHaveLength(0);
+        });
+        it("should return 400 status code if password field is missing", async () => {
+            const userData = { ...userMainData, password: "" };
+            const response = await SubmitUser(userData, adminToken);
+            expect(response.statusCode).toBe(400);
+            const users = await getUserData();
+            expect(users).toHaveLength(0);
+        });
+    });
+    describe("Filds are not in proper Format", () => {
+        it("should should tream the email field", async () => {
+            const userData = {
+                ...userMainData,
+                email: " vishalpanchal570@gmail.com ",
+            };
+            await SubmitUser(userData, adminToken);
+            const users = await getUserData();
+            const user = users[0];
+            expect(user.email).toBe("vishalpanchal570@gmail.com");
+        });
+
+        it("should return 400 status code if email is not valid email", async () => {
+            const userData = { ...userMainData, email: "@gmail.com" };
+            const response = await SubmitUser(userData, adminToken);
+            expect(response.status).toBe(400);
+            const users = await getUserData();
+            expect(users).toHaveLength(0);
+        });
+
+        it("should return 400 status code if password length is less then 8 character", async () => {
+            const userData = { ...userMainData, password: "secret" };
+            const response = await SubmitUser(userData, adminToken);
+            expect(response.status).toBe(400);
+            const users = await getUserData();
+            expect(users).toHaveLength(0);
+        });
+        it("shoud return an array of error messages if email is missing", async () => {
+            const userData = { ...userMainData, email: "" };
+            const response = await SubmitUser(userData, adminToken);
+            expect(response.body).toHaveProperty("errors");
+            expect(
+                (response.body as Record<string, string>).errors.length,
+            ).toBeGreaterThan(0);
         });
     });
 });

@@ -46,3 +46,17 @@ export interface CreateTenantResponse {
 export interface CreateTenantRequest extends Request {
     body: ITenant;
 }
+
+export interface LimitedUserData {
+    firstName: string;
+    lastName: string;
+    role: string;
+}
+
+export interface UpdateUserRequest extends Request {
+    body: LimitedUserData;
+}
+
+export interface CreateUserResponse {
+    id: string;
+}

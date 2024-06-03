@@ -39,9 +39,13 @@ describe("GET /Tenants/ || GET /Tenants/id", () => {
         return response;
     };
 
-    const getSingleTenant = async (id: number) => {
-        const tenant = request(app).get(`/tenants/${id}`);
-        return tenant;
+    const getSingleTenant = async (adminToken: string | null, id: number) => {
+        const requestBuilder = request(app).get(`/tenants/${id}`);
+        if (adminToken) {
+            await requestBuilder.set("Cookie", [`accessToken=${adminToken}`]);
+        }
+        const response = await requestBuilder;
+        return response;
     };
 
     const getAllTenants = async () => {
@@ -73,7 +77,7 @@ describe("GET /Tenants/ || GET /Tenants/id", () => {
             const responseAll = await getAllTenants();
             expect(responseAll.statusCode).toBe(200);
             expect(responseAll.body).toHaveLength(3);
-            const response = await getSingleTenant(Number(id));
+            const response = await getSingleTenant(adminToken, Number(id));
             expect(response.statusCode).toBe(200);
             const expectedProperties = [
                 "id",
@@ -99,7 +103,7 @@ describe("GET /Tenants/ || GET /Tenants/id", () => {
         it("should return object from getSingleTenant", async () => {
             const submitResponse = await SubmitTenant(tenantMainData);
             const id = (submitResponse.body as CreateTenantResponse).id;
-            const response = await getSingleTenant(Number(id));
+            const response = await getSingleTenant(adminToken, Number(id));
             expect(response.statusCode).toBe(200);
             expect(typeof response.body).toBe("object");
         });
@@ -110,7 +114,7 @@ describe("GET /Tenants/ || GET /Tenants/id", () => {
             const submitResponse = await SubmitTenant(tenantMainData3);
             const id = (submitResponse.body as CreateTenantResponse).id;
             const responseAll = await getAllTenants();
-            const response = await getSingleTenant(Number(id));
+            const response = await getSingleTenant(adminToken, Number(id));
             expect(response.statusCode).toBe(200);
             expect(
                 (response.headers as Record<string, string>)["content-type"],
@@ -118,6 +122,21 @@ describe("GET /Tenants/ || GET /Tenants/id", () => {
             expect(
                 (responseAll.headers as Record<string, string>)["content-type"],
             ).toEqual(expect.stringContaining("json"));
+        });
+
+        it("should return 401 status code if user is not authenticated", async () => {
+            const submitResponse = await SubmitTenant(tenantMainData);
+            const id = (submitResponse.body as CreateTenantResponse).id;
+            const response = await getSingleTenant(null, Number(id));
+            expect(response.statusCode).toBe(401);
+        });
+
+        it("should return 403 status code if user is not ADMIN", async () => {
+            const submitResponse = await SubmitTenant(tenantMainData);
+            const id = (submitResponse.body as CreateTenantResponse).id;
+            const managerToken = jwks.token({ sub: "1", role: Roles.MANAGER });
+            const response = await getSingleTenant(managerToken, Number(id));
+            expect(response.statusCode).toBe(403);
         });
     });
 });

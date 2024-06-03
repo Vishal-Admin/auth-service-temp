@@ -1,2 +1,3 @@
  npm run migration:generate -- .\src\migration\<name of file> -d .\src\config\data-source.ts
  npm run migration:run -- -d .\src\config\data-source.ts
+ npm run migration:create -- .\src\migration\<name of file> -d .\src\config\data-source.ts

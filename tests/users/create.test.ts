@@ -54,7 +54,16 @@ describe("POST /users", () => {
 
     const getUserData = async () => {
         const userRepository = connection.getRepository(User);
-        const users = await userRepository.find();
+        const users = await userRepository.find({
+            select: [
+                "id",
+                "firstName",
+                "lastName",
+                "email",
+                "password",
+                "role",
+            ],
+        });
         return users;
     };
 

@@ -129,7 +129,7 @@ export class AuthController {
     async self(req: AuthRequest, res: Response) {
         const id = Number(req.auth.sub);
         const user = await this.userService.findById(id);
-        res.json({ ...user, password: undefined });
+        res.json(user);
     }
 
     async refresh(req: AuthRequest, res: Response, next: NextFunction) {

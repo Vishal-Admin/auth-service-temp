@@ -36,4 +36,21 @@ router.patch(
     },
 );
 
+router.get("/", async (req, res, next) => {
+    await userController.getAll(req, res, next);
+});
+
+router.get("/:id", async (req, res, next) => {
+    await userController.getOne(req, res, next);
+});
+
+router.delete(
+    "/:id",
+    authenticate,
+    canAccess([Roles.ADMIN]),
+    async (req, res, next) => {
+        await userController.destroy(req, res, next);
+    },
+);
+
 export default router;

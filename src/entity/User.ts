@@ -18,7 +18,7 @@ export class User {
     @ManyToOne(() => Tenant)
     tenant: Tenant;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, select: false })
     password: string;
 
     @Column({ nullable: false })

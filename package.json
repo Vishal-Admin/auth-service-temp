@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "cross-env NODE_ENV=dev nodemon -L src/server.ts",
+        "build": "tsc",
         "fcheck": "prettier . --check",
         "ffix": "prettier . --write",
         "lint": "eslint .",
